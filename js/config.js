@@ -1,4 +1,4 @@
-// Firebase Configuration
+// Initialize Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyB7q5q9PRzhfRTJO4w2bjOM8p9FGJrdlN4",
   authDomain: "uhihihaha-4dbdf.firebaseapp.com",
@@ -10,7 +10,10 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+
 const auth = firebase.auth();
 const db = firebase.firestore();
 
