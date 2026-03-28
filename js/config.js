@@ -10,9 +10,7 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
+firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
 const db = firebase.firestore();
@@ -33,3 +31,5 @@ const ROLES = {
   host: 'host',
   player: 'player'
 };
+
+console.log('Firebase initialized successfully');
