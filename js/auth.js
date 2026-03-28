@@ -3,36 +3,29 @@ async function checkAuth() {
     return new Promise((resolve) => {
         const unsubscribe = auth.onAuthStateChanged(async (user) => {
             if (user) {
-                const userDoc = await db.collection('users').doc(user.uid).get();
-                if (userDoc.exists) {
-                    localStorage.setItem('currentUser', JSON.stringify({
-                        uid: user.uid,
-                        email: user.email,
-                        name: user.displayName,
-                        photoURL: user.photoURL,
-                        ...userDoc.data()
-                    }));
-                    
-                    document.getElementById('auth-screen').style.display = 'none';
-                    document.getElementById('app-screen').style.display = 'flex';
-                    
-                    await loadUserData();
-                    initializeApp();
-                }
-            } else {
-                const savedUser = localStorage.getItem('currentUser');
-                if (savedUser) {
-                    try {
+                try {
+                    const userDoc = await db.collection('users').doc(user.uid).get();
+                    if (userDoc.exists) {
+                        localStorage.setItem('currentUser', JSON.stringify({
+                            uid: user.uid,
+                            email: user.email,
+                            name: user.displayName,
+                            photoURL: user.photoURL,
+                            ...userDoc.data()
+                        }));
+                        
                         document.getElementById('auth-screen').style.display = 'none';
                         document.getElementById('app-screen').style.display = 'flex';
-                    } catch (e) {
-                        document.getElementById('auth-screen').style.display = 'flex';
-                        document.getElementById('app-screen').style.display = 'none';
+                        
+                        await loadUserData();
+                        initializeApp();
                     }
-                } else {
-                    document.getElementById('auth-screen').style.display = 'flex';
-                    document.getElementById('app-screen').style.display = 'none';
+                } catch (e) {
+                    console.error('Error checking user:', e);
                 }
+            } else {
+                document.getElementById('auth-screen').style.display = 'flex';
+                document.getElementById('app-screen').style.display = 'none';
             }
             resolve();
             unsubscribe();
@@ -45,38 +38,46 @@ async function loadUserData() {
     const user = auth.currentUser;
     if (!user) return;
     
-    const userDoc = await db.collection('users').doc(user.uid).get();
-    if (userDoc.exists) {
-        const userData = userDoc.data();
-        
-        document.getElementById('user-avatar').src = user.photoURL || 'https://via.placeholder.com/40';
-        document.getElementById('user-name').textContent = user.displayName || 'Unknown';
-        document.getElementById('user-role').textContent = getRoleLabel(userData.role);
-        
-        const financeMenu = document.getElementById('finance-menu');
-        const adminMenu = document.getElementById('admin-menu');
-        
-        if (userData.role === ROLES.host || userData.role === ROLES.admin) {
-            financeMenu.style.display = 'flex';
+    try {
+        const userDoc = await db.collection('users').doc(user.uid).get();
+        if (userDoc.exists) {
+            const userData = userDoc.data();
+            
+            document.getElementById('user-avatar').src = user.photoURL || 'https://via.placeholder.com/40';
+            document.getElementById('user-name').textContent = user.displayName || 'Unknown';
+            document.getElementById('user-role').textContent = getRoleLabel(userData.role);
+            
+            const financeMenu = document.getElementById('finance-menu');
+            const adminMenu = document.getElementById('admin-menu');
+            
+            if (userData.role === ROLES.host || userData.role === ROLES.admin) {
+                if (financeMenu) financeMenu.style.display = 'flex';
+            }
+            
+            if (userData.role === ROLES.admin) {
+                if (adminMenu) adminMenu.style.display = 'flex';
+            }
         }
-        
-        if (userData.role === ROLES.admin) {
-            adminMenu.style.display = 'flex';
-        }
+    } catch (e) {
+        console.error('Error loading user data:', e);
     }
 }
 
-// Handle Google Sign-In with Firebase
+// Handle Google Sign-In
 async function handleGoogleSignIn() {
     try {
         const provider = new firebase.auth.GoogleAuthProvider();
-        const result = await auth.signInWithPopup(provider);
+        provider.addScope('profile');
+        provider.addScope('email');
         
+        const result = await auth.signInWithPopup(provider);
         const user = result.user;
         
+        // Check if user exists in database
         const userDoc = await db.collection('users').doc(user.uid).get();
         
         if (!userDoc.exists) {
+            // Create new user
             let role = ROLES.player;
             
             if (user.email === ADMIN_EMAIL) {
@@ -112,21 +113,17 @@ async function handleGoogleSignIn() {
         initializeApp();
         
     } catch (error) {
-        console.error('Error signing in:', error);
-        alert('Lỗi đăng nhập: ' + error.message);
+        console.error('Lỗi đăng nhập:', error);
+        showAlert('Lỗi đăng nhập: ' + error.message, 'error');
     }
 }
 
 // Initialize on page load
-window.addEventListener('load', () => {
-    checkAuth();
+window.addEventListener('load', async () => {
+    await checkAuth();
     
     const googleLoginBtn = document.getElementById('google-login-btn');
     if (googleLoginBtn) {
-        const button = document.createElement('button');
-        button.className = 'btn btn-primary btn-large';
-        button.innerHTML = '🔗 Đăng nhập bằng Google';
-        button.onclick = handleGoogleSignIn;
-        googleLoginBtn.appendChild(button);
+        googleLoginBtn.addEventListener('click', handleGoogleSignIn);
     }
 });
