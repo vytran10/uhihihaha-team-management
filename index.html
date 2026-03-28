@@ -14,7 +14,7 @@
                 <h1>⚽ UHIHIHAHA</h1>
                 <p>Quản Lý Đội Bóng</p>
             </div>
-            <div id="google-login-btn" class="btn btn-primary btn-large" style="cursor: pointer;">
+            <div id="google-login-btn" class="btn btn-primary btn-large" style="cursor: pointer; margin-top: 20px;">
                 🔗 Đăng nhập bằng Google
             </div>
             <p class="auth-footer">Bạn cần đăng nhập để tiếp tục</p>
@@ -145,7 +145,7 @@
                 <!-- Profile Page -->
                 <div id="profile-page" class="page" style="display: none;">
                     <div class="profile-header">
-                        <img id="profile-avatar" src="" alt="Avatar">
+                        <img id="profile-avatar" src="" alt="Avatar" style="display: none;">
                         <div>
                             <h2 id="profile-name"></h2>
                             <p id="profile-email"></p>
@@ -199,12 +199,12 @@
                         </div>
                     </div>
                     
-                    <div class="finance-section">
+                    <div class="profile-section">
                         <h3>📊 Lịch sử giao dịch</h3>
                         <div id="finance-transactions" class="table-container"></div>
                     </div>
 
-                    <div class="finance-section">
+                    <div class="profile-section">
                         <h3>💳 Danh sách nợ từng thành viên</h3>
                         <div id="member-debts" class="table-container"></div>
                     </div>
@@ -296,16 +296,18 @@
                     <input type="text" id="share-link" readonly>
                     <button class="btn btn-small btn-primary" onclick="copyToClipboard('share-link')">📋 Sao chép</button>
                 </div>
-                <p class="note">Link này có thể được dán vào Zalo hoặc chia sẻ qua các kênh khác.</p>
+                <p class="note">Link này có thể được dán vào Zalo hoặc chia sẻ qua các k��nh khác.</p>
             </div>
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="js/config.js"></script>
+    <!-- Firebase Scripts - ORDER MATTERS! -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js"></script>
+    
+    <!-- App Scripts -->
+    <script src="js/config.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/app.js"></script>
