@@ -18,7 +18,10 @@ async function checkAuth() {
                         document.getElementById('app-screen').style.display = 'flex';
                         
                         await loadUserData();
-                        initializeApp();
+                        setupNavigation();
+                        setupModals();
+                        await loadDashboard();
+                        showPage('dashboard');
                     }
                 } catch (e) {
                     console.error('Error checking user:', e);
@@ -125,7 +128,10 @@ async function handleGoogleSignIn() {
         document.getElementById('app-screen').style.display = 'flex';
         
         await loadUserData();
-        initializeApp();
+        setupNavigation();
+        setupModals();
+        await loadDashboard();
+        showPage('dashboard');
         
         console.log('Sign-in complete!');
         
