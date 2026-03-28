@@ -1,1 +1,316 @@
-<!DOCTYPE html>\n<html lang="en">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>Team Management System</title>\n    <link rel="stylesheet" href="styles.css">\n</head>\n<body>\n    <header>\n        <h1>Welcome to the Team Management System</h1>\n    </header>\n    <nav>\n        <ul>\n            <li><a href="#">Home</a></li>\n            <li><a href="#">Teams</a></li>\n            <li><a href="#">Projects</a></li>\n            <li><a href="#">Contact</a></li>\n        </ul>\n    </nav>\n    <main>\n        <section id="team-list">\n            <h2>Our Teams</h2>\n            <ul>\n                <li>Development</li>\n                <li>Marketing</li>\n                <li>Sales</li>\n                <li>Support</li>\n            </ul>\n        </section>\n        <section id="project-list">\n            <h2>Current Projects</h2>\n            <ul>\n                <li>Project A</li>\n                <li>Project B</li>\n                <li>Project C</li>\n            </ul>\n        </section>\n    </main>\n    <footer>\n        <p>&copy; 2026 Team Management System. All rights reserved.</p>\n    </footer>\n</body>\n</html>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uhihihaha - Quản Lý Đội Bóng</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Auth Screen -->
+    <div id="auth-screen" class="screen">
+        <div class="auth-container">
+            <div class="auth-header">
+                <h1>⚽ UHIHIHAHA</h1>
+                <p>Quản Lý Đội Bóng</p>
+            </div>
+            <div id="google-login-btn"></div>
+            <p class="auth-footer">Bạn cần đăng nhập để tiếp tục</p>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="app-screen" class="screen" style="display: none;">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>⚽ UHIHIHAHA</h2>
+                <button id="menu-toggle" class="menu-toggle">☰</button>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" data-page="dashboard" class="nav-item active">
+                    <span class="icon">📊</span>
+                    <span>Bảng điều khiển</span>
+                </a>
+                <a href="#" data-page="matches" class="nav-item">
+                    <span class="icon">⚽</span>
+                    <span>Trận đấu</span>
+                </a>
+                <a href="#" data-page="members" class="nav-item">
+                    <span class="icon">👥</span>
+                    <span>Thành viên</span>
+                </a>
+                <a href="#" data-page="profile" class="nav-item">
+                    <span class="icon">👤</span>
+                    <span>Hồ sơ cá nhân</span>
+                </a>
+                <a href="#" data-page="finance" class="nav-item" id="finance-menu" style="display: none;">
+                    <span class="icon">💰</span>
+                    <span>Quỹ đội</span>
+                </a>
+                <a href="#" data-page="admin" class="nav-item" id="admin-menu" style="display: none;">
+                    <span class="icon">⚙️</span>
+                    <span>Quản lý Admin</span>
+                </a>
+                <hr style="margin: 10px 0; border: none; border-top: 1px solid rgba(255,255,255,0.1);">
+                <a href="#" class="nav-item" id="logout-btn">
+                    <span class="icon">🚪</span>
+                    <span>Đăng xuất</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <img id="user-avatar" src="" alt="Avatar">
+                    <div>
+                        <div id="user-name" class="user-name"></div>
+                        <div id="user-role" class="user-role"></div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="top-bar">
+                <h1 id="page-title">Bảng điều khiển</h1>
+                <div class="top-bar-actions"></div>
+            </div>
+
+            <div class="content-area" id="content-area">
+                <!-- Dashboard -->
+                <div id="dashboard-page" class="page" style="display: block;">
+                    <div class="dashboard-grid">
+                        <div class="card stat-card">
+                            <div class="stat-icon">⚽</div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="total-matches">0</div>
+                                <div class="stat-label">Tổng trận đấu</div>
+                            </div>
+                        </div>
+                        <div class="card stat-card">
+                            <div class="stat-icon">👥</div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="total-members">0</div>
+                                <div class="stat-label">Tổng thành viên</div>
+                            </div>
+                        </div>
+                        <div class="card stat-card">
+                            <div class="stat-icon">💰</div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="total-fund">0</div>
+                                <div class="stat-label">Quỹ đội (VNĐ)</div>
+                            </div>
+                        </div>
+                        <div class="card stat-card">
+                            <div class="stat-icon">💳</div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="total-debt">0</div>
+                                <div class="stat-label">Tổng nợ (VNĐ)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-section">
+                        <h3>📋 Trận đấu sắp tới</h3>
+                        <div id="upcoming-matches" class="matches-list"></div>
+                    </div>
+
+                    <div class="dashboard-section">
+                        <h3>📊 Top nợ nhất</h3>
+                        <div id="top-debtors" class="members-list"></div>
+                    </div>
+                </div>
+
+                <!-- Matches Page -->
+                <div id="matches-page" class="page" style="display: none;">
+                    <div class="page-header">
+                        <h2>Quản Lý Trận Đấu</h2>
+                        <button id="create-match-btn" class="btn btn-primary" style="display: none;">
+                            ➕ Tạo trận đấu
+                        </button>
+                    </div>
+                    <div id="matches-container" class="matches-container"></div>
+                </div>
+
+                <!-- Members Page -->
+                <div id="members-page" class="page" style="display: none;">
+                    <div class="page-header">
+                        <h2>Quản Lý Thành Viên</h2>
+                    </div>
+                    <div id="members-container" class="members-container"></div>
+                </div>
+
+                <!-- Profile Page -->
+                <div id="profile-page" class="page" style="display: none;">
+                    <div class="profile-header">
+                        <img id="profile-avatar" src="" alt="Avatar">
+                        <div>
+                            <h2 id="profile-name"></h2>
+                            <p id="profile-email"></p>
+                            <p id="profile-role"></p>
+                        </div>
+                    </div>
+
+                    <div class="profile-stats">
+                        <div class="stat-box">
+                            <div class="stat-label">Trận đã đá</div>
+                            <div class="stat-value" id="profile-matches">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Điểm</div>
+                            <div class="stat-value" id="profile-points">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Trận chưa nộp</div>
+                            <div class="stat-value" id="profile-unpaid">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Tổng nợ</div>
+                            <div class="stat-value" id="profile-debt">0</div>
+                        </div>
+                    </div>
+
+                    <div class="profile-section">
+                        <h3>📋 Các trận chưa nộp tiền</h3>
+                        <div id="unpaid-matches" class="table-container"></div>
+                    </div>
+                </div>
+
+                <!-- Finance Page -->
+                <div id="finance-page" class="page" style="display: none;">
+                    <div class="page-header">
+                        <h2>Quỹ Đội Bóng</h2>
+                    </div>
+                    
+                    <div class="finance-stats">
+                        <div class="card">
+                            <h3>Số dư quỹ</h3>
+                            <div class="balance" id="finance-balance">0 VNĐ</div>
+                        </div>
+                        <div class="card">
+                            <h3>Tổng thu</h3>
+                            <div class="balance income" id="finance-income">0 VNĐ</div>
+                        </div>
+                        <div class="card">
+                            <h3>Tổng chi</h3>
+                            <div class="balance expense" id="finance-expense">0 VNĐ</div>
+                        </div>
+                    </div>
+                    
+                    <div class="finance-section">
+                        <h3>📊 Lịch sử giao dịch</h3>
+                        <div id="finance-transactions" class="table-container"></div>
+                    </div>
+
+                    <div class="finance-section">
+                        <h3>💳 Danh sách nợ từng thành viên</h3>
+                        <div id="member-debts" class="table-container"></div>
+                    </div>
+                </div>
+
+                <!-- Admin Page -->
+                <div id="admin-page" class="page" style="display: none;">
+                    <div class="page-header">
+                        <h2>Quản Lý Admin</h2>
+                    </div>
+
+                    <div class="admin-tabs">
+                        <button class="admin-tab-btn active" data-tab="users">👥 Quản lý người dùng</button>
+                        <button class="admin-tab-btn" data-tab="roles">⚙️ Quản lý quyền</button>
+                        <button class="admin-tab-btn" data-tab="finance">💰 Điều chỉnh tài chính</button>
+                    </div>
+
+                    <div class="admin-tab-content">
+                        <div id="admin-users-tab" class="admin-tab" style="display: block;">
+                            <div id="admin-users-list" class="table-container"></div>
+                        </div>
+
+                        <div id="admin-roles-tab" class="admin-tab" style="display: none;">
+                            <div id="admin-roles-list" class="members-list"></div>
+                        </div>
+
+                        <div id="admin-finance-tab" class="admin-tab" style="display: none;">
+                            <div id="admin-finance-list" class="table-container"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="match-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="match-modal-title">Tạo trận đấu</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Tên trận</label>
+                    <input type="text" id="match-name" placeholder="VD: Trận giao hữu vs CLB XYZ">
+                </div>
+                <div class="form-group">
+                    <label>Ngày đấu</label>
+                    <input type="datetime-local" id="match-date">
+                </div>
+                <div class="form-group">
+                    <label>Địa điểm</label>
+                    <input type="text" id="match-location" placeholder="VD: Sân bóng Minh Khai">
+                </div>
+                <div class="form-group">
+                    <label>Chi phí bình quân (VNĐ)</label>
+                    <input type="number" id="match-cost" placeholder="0">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('match-modal')">Hủy</button>
+                <button class="btn btn-primary" id="save-match-btn">Lưu trận đấu</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="match-details-modal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2 id="match-details-title"></h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="match-details-container" id="match-details-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="share-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Chia sẻ trận đấu</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Sao chép link sau để chia sẻ cho cầu thủ:</p>
+                <div class="share-link-box">
+                    <input type="text" id="share-link" readonly>
+                    <button class="btn btn-small" onclick="copyToClipboard('share-link')">📋 Sao chép</button>
+                </div>
+                <p class="note">Link này có thể được dán vào Zalo hoặc chia sẻ qua các kênh khác.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js"></script>
+    <script src="https://accounts.google.com/gsi/client"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/matches.js"></script>
+    <script src="js/members.js"></script>
+    <script src="js/finance.js"></script>
+    <script src="js/profile.js"></script>
+</body>
+</html>
