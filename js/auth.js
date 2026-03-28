@@ -43,9 +43,13 @@ async function loadUserData() {
         if (userDoc.exists) {
             const userData = userDoc.data();
             
-            document.getElementById('user-avatar').src = user.photoURL || 'https://via.placeholder.com/40';
-            document.getElementById('user-name').textContent = user.displayName || 'Unknown';
-            document.getElementById('user-role').textContent = getRoleLabel(userData.role);
+            const avatar = document.getElementById('user-avatar');
+            const name = document.getElementById('user-name');
+            const role = document.getElementById('user-role');
+            
+            if (avatar) avatar.src = user.photoURL || 'https://via.placeholder.com/40';
+            if (name) name.textContent = user.displayName || 'Unknown';
+            if (role) role.textContent = getRoleLabel(userData.role);
             
             const financeMenu = document.getElementById('finance-menu');
             const adminMenu = document.getElementById('admin-menu');
@@ -66,17 +70,24 @@ async function loadUserData() {
 // Handle Google Sign-In
 async function handleGoogleSignIn() {
     try {
+        console.log('Starting Google Sign-In...');
+        console.log('Firebase auth:', auth);
+        
         const provider = new firebase.auth.GoogleAuthProvider();
         provider.addScope('profile');
         provider.addScope('email');
         
+        console.log('Showing Google sign-in popup...');
         const result = await auth.signInWithPopup(provider);
         const user = result.user;
+        
+        console.log('User signed in:', user.email);
         
         // Check if user exists in database
         const userDoc = await db.collection('users').doc(user.uid).get();
         
         if (!userDoc.exists) {
+            console.log('Creating new user...');
             // Create new user
             let role = ROLES.player;
             
@@ -97,6 +108,10 @@ async function handleGoogleSignIn() {
                     debt: 0
                 }
             });
+            
+            console.log('New user created with role:', role);
+        } else {
+            console.log('User already exists');
         }
         
         localStorage.setItem('currentUser', JSON.stringify({
@@ -112,18 +127,32 @@ async function handleGoogleSignIn() {
         await loadUserData();
         initializeApp();
         
+        console.log('Sign-in complete!');
+        
     } catch (error) {
         console.error('Lỗi đăng nhập:', error);
-        showAlert('Lỗi đăng nhập: ' + error.message, 'error');
+        alert('Lỗi đăng nhập: ' + error.message);
     }
 }
 
 // Initialize on page load
 window.addEventListener('load', async () => {
+    console.log('Page loaded, checking auth...');
+    
     await checkAuth();
     
+    console.log('Setting up login button...');
     const googleLoginBtn = document.getElementById('google-login-btn');
+    console.log('Login button element:', googleLoginBtn);
+    
     if (googleLoginBtn) {
-        googleLoginBtn.addEventListener('click', handleGoogleSignIn);
+        googleLoginBtn.addEventListener('click', (e) => {
+            console.log('Login button clicked!');
+            e.preventDefault();
+            handleGoogleSignIn();
+        });
+        console.log('Login button listener attached');
+    } else {
+        console.error('Login button not found!');
     }
 });
